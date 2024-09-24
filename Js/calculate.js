@@ -11,7 +11,6 @@ function historyAdd(income, total, balance) {
 function addToHistory(income, totalExpenses, balance,count) {
   
   historyCardShow("results")
-  historyCardShow("history-section")
 
   const historyItem = document.createElement("div");
   historyItem.className =
@@ -51,6 +50,7 @@ function calculateAmount() {
     balance:balance
   }
 
+
   return result;
 }
 
@@ -61,6 +61,8 @@ calculate.addEventListener("click", function (e) {
   
   const {income, total, balance} = result
 
+    // losicCheck(total,balance);
+    
   if (total > balance) {
     document.getElementById("logic-error").classList.remove("hidden");
     return;
@@ -70,11 +72,76 @@ calculate.addEventListener("click", function (e) {
 
     historyCardShow("total-card")
     historyCardShow("balance-card")
+    historyRemove("savings-card")
+    historyRemove("remaining-card")
 
 
     addToHistory(total, income, balance , count++);
 
     historyCardUpdate("total-expenses",total)
     historyCardUpdate("balance",balance)
+    emtyIputValue();
   }
 });
+
+const savings = document.getElementById("calculate-savings");
+const savingsError = document.getElementById("savings-error");
+
+savings.addEventListener("click", function(){
+  const savingValue = document.getElementById("savings").value;
+
+  if(savingValue == "" || isNaN(savingValue)){
+    savingsError.classList.remove("hidden")
+  }
+  else{
+    savingsError.classList.add("hidden")
+  }
+
+  let result = calculateAmount();
+  
+  const {income, total, balance} = result
+
+    // losicCheck(total,balance);
+    
+  if (total > balance) {
+    document.getElementById("logic-error").classList.remove("hidden");
+    return;
+  } else {
+
+
+   
+    document.getElementById("logic-error").classList.add("hidden");
+
+    historyCardShow("total-card")
+    historyCardShow("balance-card")
+    historyCardShow("savings-card")
+    historyCardShow("remaining-card")
+
+
+    addToHistory(total, income, balance , count++);
+
+    const savingAmout =(savingValue * income) / 100;
+    let remaining = balance - savingAmout
+
+
+    historyCardUpdate("total-expenses",total)
+    historyCardUpdate("balance",balance)
+    historyCardUpdate("savings-amount",savingAmout)
+    historyCardUpdate("remaining-balance",remaining)
+  }
+
+  emtyIputValue();
+
+})
+
+
+
+const history = document.getElementById("history-tab");
+const assistent = document.getElementById("assistant-tab");
+
+assistent.addEventListener("click", function () {
+  navigate(true)
+})
+history.addEventListener("click", function () {
+  navigate(false)
+})
